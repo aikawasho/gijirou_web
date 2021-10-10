@@ -8,6 +8,12 @@ var bufferSize = 1024;
 var pushFrag = 0;
 var recThresh = 0.3;
 var silentCount= 0;
+
+function PlayVoice(filename){
+    console.log(filename);
+   }
+ 
+
 async function SendData(){
       let mergeBuffers = function (audioData) {
         let sampleLength = 0;
@@ -38,7 +44,14 @@ async function SendData(){
     input.setAttribute("type", "text");
     input.setAttribute("value", text); 
     body.appendChild(input);
+
+    let button = document.createElement("button");
+    button.setAttribute("id",response['filename']);
+    button.innerHTML = "再生";
+    body.appendChild(button); 
     body.appendChild(document.createElement("br")); 
+    let button1 = document.getElementById(response['filename']);
+    button1.addEventListener('click',PlayVoice(response['filename']));
    }
 
 
@@ -52,14 +65,14 @@ var onAudioProcess = function (e) {
         audioData.push(bufferData);
         
         if ( Math.max(...bufferData) > recThresh){
-              console.log('MAX');
+      //        console.log('MAX');
               silentCount = 0; 
         } else {
-        console.log(typeof silentCount);
+       // console.log(typeof silentCount);
         silentCount += 1;
         
-         if ( silentCount > 10){
-                if (audioData.length > 20 ){
+         if ( silentCount > 50){
+                if (audioData.length > 55 ){
                         SendData(audioData);
                         console.log('audio send');
                  }
@@ -74,7 +87,7 @@ var onAudioProcess = function (e) {
  function MicSuccess( stream ){
       audioContext = new AudioContext();
       audio_sample_rate = audioContext.sampleRate;
-      console.log(audio_sample_rate);
+    //  console.log(audio_sample_rate);
       scriptProcessor = audioContext.createScriptProcessor(1024, 1, 1);
       var mediastreamsource = audioContext.createMediaStreamSource(stream);
       mediastreamsource.connect(scriptProcessor);
@@ -96,7 +109,6 @@ function stopREC(){
   $('#rec_btn').css('display','block');
   $('#stop_btn').css('display', 'none');
   audioContext.close();
-  SendData();
   console.log('send audio');
  }
 

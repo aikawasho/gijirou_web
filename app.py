@@ -10,6 +10,8 @@ import scipy.io.wavfile as siw
 import time
 from BertSum.server_BertSum.bert_summary import Bertsum_pred
 from tools.speech_t import speech_text
+import ssl
+
 
 #float32をPCM16に変換
 def raw2PCM(raw_floats):
@@ -22,7 +24,8 @@ def raw2PCM(raw_floats):
 
 #Flaskオブジェクトの生成
 app = Flask(__name__)
-
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+context.load_cert_chain('cert.crt', 'server_secret.key')
 #「/」へアクセスがあった場合に、"Hello World"の文字列を返す
 @app.route('/',methods = ['POST','GET'])
 def hello():
@@ -41,7 +44,7 @@ def hello():
         text,type_ = speech_text(output_path)
         print('テキスト化')
         print(text)
-        return jsonify({"text": text} )
+        return jsonify({"text": text,"filename":str(wav_id)} )
 
     return render_template('rec_test.html')
 
@@ -57,12 +60,11 @@ def download_file(filename):
     return send_from_directory('/Users/shotta_control/Documents/ginza/JS_test/music', filename)
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory('/Users/shotta_control/Documents/ginza/JS_test/image/',
+    return send_from_directory('/home/ec2-user/summary_server/gijirou_web/image/',
                                'favicon.ico')
 
 @app.route('/static/js/<path:filename>')
 def processor_file(filename):
-    return send_from_directory('/Users/shotta_control/Documents/ginza/JS_test/static/js', filename)
-
-if __name__ == "__mani__":
-        app.run(debug=False, host='0.0.0.0', port=80)
+    return send_from_directory('/home/ec2-user/summary_server/gijirou_web/static/js', filename)
+if __name__ == "__main__":
+        app.run(debug=False, host='0.0.0.0',port = 9012, ssl_context=context, threaded=True,)
