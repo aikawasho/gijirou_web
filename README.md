@@ -1,1 +1,1 @@
-# gijirou_web
+# gijiroku_web
