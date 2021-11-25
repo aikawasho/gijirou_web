@@ -9,8 +9,15 @@ var pushFrag = 0;
 var recThresh = 0.2;
 var silentCount= 0;
 
+<<<<<<< HEAD
   // Create an instance of a db object for us to store our database in
 let db;
+=======
+function PlayVoice(filename){
+    console.log(filename);
+   }
+ 
+>>>>>>> f512e800a1b99c5f26fce57455e9f2c0025c5ed9
 
 async function SendData(){
       let mergeBuffers = function (audioData) {
@@ -37,11 +44,28 @@ async function SendData(){
                 headers : {"Content-Type" : "application/json"},
                 body : JSON.stringify(data)}
     const response = await fetch("/",options).then(response => response.json());
+<<<<<<< HEAD
     console.log(response['text']);
     
     displaySpeech(response['text'],url);
         
      
+=======
+    text = response['text'];
+    let body = document.body
+    let input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("value", text); 
+    body.appendChild(input);
+
+    let button = document.createElement("button");
+    button.setAttribute("id",response['filename']);
+    button.innerHTML = "再生";
+    body.appendChild(button); 
+    body.appendChild(document.createElement("br")); 
+    let button1 = document.getElementById(response['filename']);
+    button1.addEventListener('click',PlayVoice(response['filename']));
+>>>>>>> f512e800a1b99c5f26fce57455e9f2c0025c5ed9
    }
 
 
@@ -55,14 +79,14 @@ var onAudioProcess = function (e) {
         audioData.push(bufferData);
         
         if ( Math.max(...bufferData) > recThresh){
-              console.log('MAX');
+      //        console.log('MAX');
               silentCount = 0; 
         } else {
-        console.log(typeof silentCount);
+       // console.log(typeof silentCount);
         silentCount += 1;
         
-         if ( silentCount > 10){
-                if (audioData.length > 20 ){
+         if ( silentCount > 50){
+                if (audioData.length > 55 ){
                         SendData(audioData);
                         console.log('audio send');
                  }
@@ -77,7 +101,7 @@ var onAudioProcess = function (e) {
  function MicSuccess( stream ){
       audioContext = new AudioContext();
       audio_sample_rate = audioContext.sampleRate;
-      console.log(audio_sample_rate);
+    //  console.log(audio_sample_rate);
       scriptProcessor = audioContext.createScriptProcessor(1024, 1, 1);
       var mediastreamsource = audioContext.createMediaStreamSource(stream);
       mediastreamsource.connect(scriptProcessor);
@@ -99,6 +123,10 @@ function stopREC(){
   $('#rec_btn').css('display','block');
   $('#stop_btn').css('display', 'none');
   audioContext.close();
+<<<<<<< HEAD
+=======
+  console.log('send audio');
+>>>>>>> f512e800a1b99c5f26fce57455e9f2c0025c5ed9
  }
 
 function availableData( arr ){
